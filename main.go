@@ -1,7 +1,11 @@
+/*
+Copyright © 2023 NAME HERE <EMAIL ADDRESS>
+
+*/
 package main
 
-import "fmt"
+import "github.com/SjimmyChan/IsCoollab-Backend-Assignment-Virtual-File-System-Implementation/cmd"
 
 func main() {
-	fmt.Print("Hello World")
+	cmd.Execute()
 }
