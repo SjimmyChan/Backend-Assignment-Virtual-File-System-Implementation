@@ -25,11 +25,11 @@ to quickly create a Cobra application.`,
 	},
 }
 
-var Username string
-
 func init() {
+
+	var username string
 	
-	registerCmd.Flags().StringVarP(&Username, "username", "u", "", "username")
+	registerCmd.Flags().StringVarP(&username, "username", "u", "", "username")
 	registerCmd.MarkFlagRequired("username")
 
 	rootCmd.AddCommand(registerCmd)

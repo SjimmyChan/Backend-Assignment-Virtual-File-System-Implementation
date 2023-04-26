@@ -12,7 +12,7 @@ import (
 
 // createFileCmd represents the createFile command
 var createFileCmd = &cobra.Command{
-	Use:   "createFile",
+	Use:   "create-file [username] [foldername] [filename] [description]?",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -25,7 +25,21 @@ to quickly create a Cobra application.`,
 	},
 }
 
+
 func init() {
+
+	var username string
+	var foldername string
+	var filename string
+	var description string
+
+	createFileCmd.Flags().StringVarP(&username, "username", "u", "", "username")
+	createFileCmd.Flags().StringVarP(&foldername, "foldername", "f", "", "foldername")
+	createFileCmd.Flags().StringVarP(&filename, "filename", "i", "", "filename")
+	createFileCmd.Flags().StringVarP(&description, "description", "d", "", "description")
+
+	createFileCmd.MarkFlagsRequiredTogether("username", "foldername", "filename")
+
 	rootCmd.AddCommand(createFileCmd)
 
 	// Here you will define your flags and configuration settings.

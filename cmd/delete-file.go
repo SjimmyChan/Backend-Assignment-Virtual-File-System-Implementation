@@ -10,9 +10,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// listFoldersCmd represents the listFolders command
-var listFoldersCmd = &cobra.Command{
-	Use:   "listFolders",
+// deleteFileCmd represents the deleteFile command
+var deleteFileCmd = &cobra.Command{
+	Use:   "delete-file [username] [foldername] [filename]",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -21,20 +21,31 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("listFolders called")
+		fmt.Println("deleteFile called")
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(listFoldersCmd)
+
+	var username string
+	var foldername string
+	var filename string
+
+	deleteFileCmd.Flags().StringVarP(&username, "username", "u", "", "username")
+	deleteFileCmd.Flags().StringVarP(&foldername, "foldername", "f", "", "foldername")
+	deleteFileCmd.Flags().StringVarP(&filename, "filename", "i", "", "filename")
+	
+	deleteFileCmd.MarkFlagsRequiredTogether("username", "foldername", "filename")
+
+	rootCmd.AddCommand(deleteFileCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// listFoldersCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// deleteFileCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// listFoldersCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// deleteFileCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

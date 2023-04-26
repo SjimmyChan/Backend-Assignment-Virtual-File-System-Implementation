@@ -12,7 +12,7 @@ import (
 
 // renameFolderCmd represents the renameFolder command
 var renameFolderCmd = &cobra.Command{
-	Use:   "renameFolder",
+	Use:   "rename-folder [username] [foldername] [new-folder-name]",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -26,6 +26,15 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
+
+	var username string
+	var foldername string
+
+	renameFolderCmd.Flags().StringVarP(&username, "username", "u", "", "username")
+	renameFolderCmd.Flags().StringVarP(&foldername, "foldername", "f", "", "foldername")
+
+	renameFolderCmd.MarkFlagsRequiredTogether("username", "foldername")
+
 	rootCmd.AddCommand(renameFolderCmd)
 
 	// Here you will define your flags and configuration settings.

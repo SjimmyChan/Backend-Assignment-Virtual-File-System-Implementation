@@ -12,7 +12,7 @@ import (
 
 // listFilesCmd represents the listFiles command
 var listFilesCmd = &cobra.Command{
-	Use:   "listFiles",
+	Use:   "list-files [username] [foldername] [--sorted-name|--sorted-created] [asc|desc]",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -26,6 +26,17 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
+
+	var username string
+	var foldername string
+	var filename string
+
+	listFilesCmd.Flags().StringVarP(&username, "username", "u", "", "username")
+	listFilesCmd.Flags().StringVarP(&foldername, "foldername", "f", "", "foldername")
+	listFilesCmd.Flags().StringVarP(&filename, "filename", "i", "", "filename")
+	
+	listFilesCmd.MarkFlagsRequiredTogether("username", "foldername", "filename")
+
 	rootCmd.AddCommand(listFilesCmd)
 
 	// Here you will define your flags and configuration settings.
