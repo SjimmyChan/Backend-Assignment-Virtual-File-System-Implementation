@@ -62,7 +62,7 @@ func deleteFolder(username string, foldername string)(succeed bool) {
 	folders := &users[user_index].Folders
 	folder_exist, folder_index := checkFolderExist(folders, foldername)
 	if !folder_exist {
-		fmt.Println("Error: The foldername:" + foldername + " doesn't existed.")
+		fmt.Println("Error: The foldername:" + foldername + " doesn't exist.")
 		return false
 	}
 

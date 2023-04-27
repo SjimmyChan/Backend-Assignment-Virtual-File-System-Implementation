@@ -71,14 +71,14 @@ func deleteFile(username string, foldername string, filename string)(succeed boo
 	folders := &users[user_index].Folders
 	folder_exist, folder_index := checkFolderExist(folders, foldername)
 	if !folder_exist {
-		fmt.Println("Error: The foldername:" + foldername + " doesn't existed.")
+		fmt.Println("Error: The foldername:" + foldername + " doesn't exist.")
 		return false
 	}
 
 	files := &(*folders)[folder_index].Files
 	file_exist, file_index := checkFileExist(files, filename)
 	if !file_exist {
-		fmt.Println("Error: The filename:" + filename + " doesn't existed.")
+		fmt.Println("Error: The filename:" + filename + " doesn't exist.")
 		return false
 	}
 
