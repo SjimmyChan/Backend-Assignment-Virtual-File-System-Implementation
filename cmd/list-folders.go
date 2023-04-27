@@ -17,7 +17,7 @@ var listFoldersCmd = &cobra.Command{
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
-		if err := checkValidation(username, 30); err != nil {
+		if err := checkValidation(0, username, 30); err != nil {
 			fmt.Println(err)
 			return
 		}

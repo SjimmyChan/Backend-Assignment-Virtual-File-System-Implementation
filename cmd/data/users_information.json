@@ -1,1 +1,41 @@
-[]
+[
+  {
+    "username": "abc",
+    "folders": [
+      {
+        "foldername": "cdf",
+        "description": "",
+        "created_at": "00-00-0000 00:00:00",
+        "files": []
+      },
+      {
+        "foldername": "abc",
+        "description": "",
+        "created_at": "04-26-2023 23:16:23",
+        "files": []
+      },
+      {
+        "foldername": "azb",
+        "description": "hello",
+        "created_at": "04-26-2023 23:39:37",
+        "files": [
+          {
+            "filename": "abc",
+            "description": "this",
+            "created_at": "04-27-2023 00:31:09"
+          },
+          {
+            "filename": "bcd",
+            "description": "this is a file",
+            "created_at": "04-27-2023 00:31:42"
+          },
+          {
+            "filename": "cde",
+            "description": "this is a file",
+            "created_at": "04-27-2023 00:34:45"
+          }
+        ]
+      }
+    ]
+  }
+]

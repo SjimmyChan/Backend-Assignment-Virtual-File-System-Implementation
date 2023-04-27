@@ -17,19 +17,19 @@ var deleteFileCmd = &cobra.Command{
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
-		if err := checkValidation(username, 30); err != nil {
+		if err := checkValidation(0, username, 30); err != nil {
 			fmt.Println(err)
 			return
 		}
 
 		foldername, _ := cmd.Flags().GetString("foldername")
-		if err := checkValidation(foldername, 30); err != nil {
+		if err := checkValidation(1, foldername, 30); err != nil {
 			fmt.Println(err)
 			return
 		}
 
 		filename, _ := cmd.Flags().GetString("filename")
-		if err := checkValidation(filename, 30); err != nil {
+		if err := checkValidation(2, filename, 30); err != nil {
 			fmt.Println(err)
 			return
 		}

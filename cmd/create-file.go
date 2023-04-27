@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 	"github.com/spf13/cobra"
 )
 
@@ -16,28 +17,28 @@ var createFileCmd = &cobra.Command{
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
-		if err := checkValidation(username, 30); err != nil {
+		if err := checkValidation(0, username, 30); err != nil {
 			fmt.Println(err)
 			return
 		}
 
 		foldername, _ := cmd.Flags().GetString("foldername")
-		if err := checkValidation(foldername, 30); err != nil {
+		if err := checkValidation(1, foldername, 30); err != nil {
 			fmt.Println(err)
 			return
 		}
 
 		filename, _ := cmd.Flags().GetString("filename")
-		if err := checkValidation(filename, 30); err != nil {
+		if err := checkValidation(2, filename, 30); err != nil {
 			fmt.Println(err)
 			return
 		}
 
 		description, _ := cmd.Flags().GetString("description")
 
-		createFile(username, foldername, filename, description)
-
-		fmt.Println("createFile called")
+		if succeed := createFile(username, foldername, filename, description); succeed {
+			fmt.Println("Create file:" + filename + " successfully.")
+		}
 	},
 }
 
@@ -63,18 +64,43 @@ func init() {
 	createFileCmd.Flags().StringP("description", "d", "", "description")
 
 	rootCmd.AddCommand(createFileCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createFileCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// createFileCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func createFile(username string, foldername string, filename string, description string) {
-	fmt.Println(username, foldername, filename, description)
+func createFile(username string, foldername string, filename string, description string)(succeed bool) {
+	
+	users := getUsersInformation()
+	user_exist, user_index := checkUserExist(users, username)
+	if !user_exist {
+		fmt.Println("Error: The username:" + username + " doesn't exist.")
+		return false
+	}
+	
+	folders := &users[user_index].Folders
+	folder_exist, folder_index := checkFolderExist(folders, foldername)
+	if !folder_exist {
+		fmt.Println("Error: The foldername:" + foldername + " doesn't exist.")
+		return false
+	}
+
+	files := &(*folders)[folder_index].Files
+	file_exist, _ := checkFileExist(files, filename)
+	if file_exist {
+		fmt.Println("Error: The filename:" + filename + " has already existed.")
+		return false
+	}
+
+	current_time := time.Now()
+	file := File{
+		Filename: filename, 
+		Description: description, 
+		Created_at: current_time.Format("01-02-2006 15:04:05"), 
+	}
+
+	*files = append(*files, file)
+	
+	if err := saveUsersInformation(users); err != nil {
+		fmt.Println(err)
+		return false
+	}
+	return true
 }

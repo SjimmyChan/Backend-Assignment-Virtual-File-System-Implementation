@@ -16,13 +16,14 @@ var registerCmd = &cobra.Command{
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
-		if err := checkValidation(username, 30); err != nil {
+		if err := checkValidation(0, username, 30); err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		registerUser(username)
-		fmt.Println("register called")
+		if succeed := registerUser(username); succeed {
+			fmt.Println("Add user:" + username + "successfully.")
+		}
 	},
 }
 
@@ -34,8 +35,21 @@ func init() {
 	rootCmd.AddCommand(registerCmd)
 }
 
-func registerUser(username string) {
-	fmt.Println(username)
+func registerUser(username string)(succeed bool) {
+	
 	users := getUsersInformation()
-	fmt.Println(users)
+	exist, _ := checkUserExist(users, username)
+	if exist {
+		fmt.Println("Error: The username:" + username + " has already existed.")
+		return false
+	}
+
+	user := User{Username: username, Folders: []Folder{}, }
+	users = append(users, user)
+	
+	if err := saveUsersInformation(users); err != nil {
+		fmt.Println(err)
+		return false
+	}
+	return true
 }

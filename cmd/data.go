@@ -10,25 +10,34 @@ import (
 	"path/filepath"
 )
 
-type file struct {
-	filename string `json:"filename"`
-	description string `json:"description"`
-	created_at string `json:"created_at"`
+type File struct {
+	Filename 	string `json:"filename"`
+	Description string `json:"description"`
+	Created_at 	string `json:"created_at"`
 }
 
-type folder struct {
-	foldername string `json:"foldername"`
-	description string `json:"description"`
-	created_at string `json:"created_at"`
-	files []file `json:"files"`
+type Folder struct {
+	Foldername 	string `json:"foldername"`
+	Description string `json:"description"`
+	Created_at 	string `json:"created_at"`
+	Files 		[]File `json:"files"`
 }
 
-type user struct {
-	username string `json:"username"`
-	folders []folder `json:"folders`
+type User struct {
+	Username 	string `json:"username"`
+	Folders 	[]Folder `json:"folders"`
 }
 
-func getUsersInformation()(users []user) {
+func getFilePath() (path string) {
+	absPath, err := filepath.Abs("../IsCoollab-Backend-Assignment-Virtual-File-System-Implementation/cmd/data/users_information.json")
+	if err != nil {
+		panic(err)
+		return
+	}
+	return absPath
+}
+
+func getUsersInformation()(users []User) {
 	fileBytes, err := ioutil.ReadFile(getFilePath())
 
 	if err != nil {
@@ -44,38 +53,74 @@ func getUsersInformation()(users []user) {
 	return users
 }
 
-func saveUsersInformation(users []user) {
+func saveUsersInformation(users []User)(err error) {
 
-	userBytes, err := json.Marshal(users)
+	userBytes, err := json.MarshalIndent(users, "", "  ")
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	err = ioutil.WriteFile(getFilePath(), userBytes, 0644)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
-func checkValidation(input string, length int) (err error) {
+func checkValidation(options int, input string, length int) (err error) {
+	
+	var option string
+	switch options {
+		case 0:
+			option = "username"
+		case 1:
+			option = "foldername"
+		case 2:
+			option = "filename"
+	}
+
 	if len(input) > length || len(input) == 0 {
-		return errors.New("Error: username/foldername/filename must be less than " + strconv.Itoa(length) + " and greater than 1 charactors!")
+		return errors.New("Error: The " + option + " must be less than " + strconv.Itoa(length) + " chars and greater than 1 char.")
 	}
 
 	var alphanumeric = regexp.MustCompile("^[a-zA-Z0-9_]*$")
 
 	if !alphanumeric.MatchString(input) {
-		return errors.New("Error: username/foldername/filename must contains only alphabet, number and underscores!")
+		return errors.New("Error: " + option + " contains invalid chars.")
 	}
 
 	return nil
 }
 
-func getFilePath() (path string) {
-	absPath, err := filepath.Abs("../IsCoollab-Backend-Assignment-Virtual-File-System-Implementation/cmd/data/users_information.json")
-	if err != nil {
-		panic(err)
-		return
+func checkUserExist(users []User, username string)(exist bool, index int) {
+	if len(users) > 0 {
+		for index, exist_user := range users {
+			if exist_user.Username == username {
+				return true, index
+			}
+		}
 	}
-	return absPath
+	return false, -1
+}
+
+func checkFolderExist(folders *[]Folder, foldername string)(exist bool, index int) {
+	if len(*folders) > 0 {
+		for index := 0; index < len(*folders); index++ {
+			if (*folders)[index].Foldername == foldername {
+				return true, index
+			}
+		}
+	}
+	return false, -1
+}
+
+func checkFileExist(files *[]File, filename string)(exist bool, index int) {
+	if len(*files) > 0 {
+		for index := 0; index < len(*files); index++ {
+			if (*files)[index].Filename == filename {
+				return true, index
+			}
+		}
+	}
+	return false, -1
 }

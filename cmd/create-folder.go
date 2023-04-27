@@ -6,7 +6,7 @@ package cmd
 
 import (
 	"fmt"
-
+	"time"
 	"github.com/spf13/cobra"
 )
 
@@ -17,22 +17,22 @@ var createFolderCmd = &cobra.Command{
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("username")
-		if err := checkValidation(username, 30); err != nil {
+		if err := checkValidation(0, username, 30); err != nil {
 			fmt.Println(err)
 			return
 		}
 
 		foldername, _ := cmd.Flags().GetString("foldername")
-		if err := checkValidation(foldername, 30); err != nil {
+		if err := checkValidation(1, foldername, 30); err != nil {
 			fmt.Println(err)
 			return
 		}
 
 		description, _ := cmd.Flags().GetString("description")
 
-		createFolder(username, foldername, description)
-
-		fmt.Println("createFolder called")
+		if succeed := createFolder(username, foldername, description); succeed {
+			fmt.Println("Create folder:" + foldername + " successfully.")
+		}
 	},
 }
 
@@ -53,6 +53,34 @@ func init() {
 	rootCmd.AddCommand(createFolderCmd)
 }
 
-func createFolder(username string, foldername string, description string) {
-	fmt.Println(username, foldername, description)
+func createFolder(username string, foldername string, description string) (succeed bool) {
+
+	users := getUsersInformation()
+	user_exist, user_index := checkUserExist(users, username)
+	if !user_exist {
+		fmt.Println("Error: The username:" + username + " doesn't exist.")
+		return false
+	}
+
+	folders := &users[user_index].Folders
+	folder_exist, _ := checkFolderExist(folders, foldername)
+	if folder_exist {
+		fmt.Println("Error: The foldername:" + foldername + " has already existed.")
+		return false
+	}
+	
+	current_time := time.Now()
+	folder := Folder{
+		Foldername: foldername, 
+		Description: description, 
+		Created_at: current_time.Format("01-02-2006 15:04:05"), 
+		Files: []File{},
+	}
+	*folders = append(*folders, folder)
+	
+	if err := saveUsersInformation(users); err != nil {
+		fmt.Println(err)
+		return false
+	}
+	return true
 }
