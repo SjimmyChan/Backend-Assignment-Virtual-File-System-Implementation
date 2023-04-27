@@ -37,7 +37,7 @@ var createFileCmd = &cobra.Command{
 		description, _ := cmd.Flags().GetString("description")
 
 		if succeed := createFile(username, foldername, filename, description); succeed {
-			fmt.Println("Create file:" + filename + " successfully.")
+			fmt.Println("Create file:" + filename + " in " + username + "/" + foldername + " successfully.")
 		}
 	},
 }
@@ -89,11 +89,10 @@ func createFile(username string, foldername string, filename string, description
 		return false
 	}
 
-	current_time := time.Now()
 	file := File{
 		Filename: filename, 
 		Description: description, 
-		Created_at: current_time.Format("01-02-2006 15:04:05"), 
+		Created_at: time.Now(), 
 	}
 
 	*files = append(*files, file)

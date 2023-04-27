@@ -2,6 +2,7 @@ package cmd
 
 
 import (
+	"time"
 	"regexp"
 	"errors"
 	"strconv"
@@ -13,13 +14,13 @@ import (
 type File struct {
 	Filename 	string `json:"filename"`
 	Description string `json:"description"`
-	Created_at 	string `json:"created_at"`
+	Created_at 	time.Time `json:"created_at"`
 }
 
 type Folder struct {
 	Foldername 	string `json:"foldername"`
 	Description string `json:"description"`
-	Created_at 	string `json:"created_at"`
+	Created_at 	time.Time `json:"created_at"`
 	Files 		[]File `json:"files"`
 }
 

@@ -70,12 +70,12 @@ func listFolders(username string, sorted_name string, sorted_created string) {
 		if sorted_name == "asc" {
 			fmt.Println("[foldername] | [description] | [created at] | [username]")
 			for index := 0; index < len(folders); index++ {
-				fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at + " | " + username)
+				fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at.Format("01-02-2006 15:04:05") + " | " + username)
 			}
 		} else if sorted_name == "desc" {
 			fmt.Println("[foldername] | [description] | [created at] | [username]")
 			for index := len(folders) - 1; index >= 0; index-- {
-				fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at + " | " + username)
+				fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at.Format("01-02-2006 15:04:05") + " | " + username)
 			}
 		} else {
 			fmt.Println("Error: Please use asc/desc as sorting method")
@@ -85,12 +85,12 @@ func listFolders(username string, sorted_name string, sorted_created string) {
 		if sorted_created == "asc" {
 			fmt.Println("[foldername] | [description] | [created at] | [username]")
 			for index := 0; index < len(folders); index++ {
-				fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at + " | " + username)
+				fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at.Format("01-02-2006 15:04:05") + " | " + username)
 			}
 		} else if sorted_created == "desc" {
 			fmt.Println("[foldername] | [description] | [created at] | [username]")
 			for index := len(folders) - 1; index >= 0; index-- {
-				fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at + " | " + username)
+				fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at.Format("01-02-2006 15:04:05") + " | " + username)
 			}
 		} else {
 			fmt.Println("Error: Please use asc/desc as sorting method")
@@ -99,7 +99,7 @@ func listFolders(username string, sorted_name string, sorted_created string) {
 		sort.Sort(folderNameList(folders))
 		fmt.Println("[foldername] | [description] | [created at] | [username]")
 		for index := 0; index < len(folders); index++ {
-			fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at + " | " + username)
+			fmt.Println(folders[index].Foldername + " | " + folders[index].Description + " | " + folders[index].Created_at.Format("01-02-2006 15:04:05") + " | " + username)
 		}
 	}
 }
@@ -125,7 +125,7 @@ func (f folderCreatedList) Len() int {
 }
 
 func (f folderCreatedList) Less(i, j int) bool {
-	return f[i].Created_at < f[j].Created_at
+	return f[i].Created_at.Before(f[j].Created_at)
 }
 
 func (f folderCreatedList) Swap(i, j int) {

@@ -1,28 +1,28 @@
 [
   {
-    "username": "abc",
+    "username": "user1",
     "folders": [
       {
-        "foldername": "bcd",
-        "description": "hello",
-        "created_at": "04-26-2023 23:39:37",
-        "files": [
-          {
-            "filename": "bcd",
-            "description": "this is a file",
-            "created_at": "04-27-2023 00:31:42"
-          },
-          {
-            "filename": "cde",
-            "description": "this is a file",
-            "created_at": "04-27-2023 00:34:45"
-          }
-        ]
+        "foldername": "folder1",
+        "description": "",
+        "created_at": "2023-04-27T13:53:59.497951-07:00",
+        "files": []
       },
       {
-        "foldername": "abc",
-        "description": "this is another folder",
-        "created_at": "04-27-2023 02:03:03",
+        "foldername": "folder2",
+        "description": "this-is-folder-2",
+        "created_at": "2023-04-27T13:55:13.740365-07:00",
+        "files": []
+      }
+    ]
+  },
+  {
+    "username": "user2",
+    "folders": [
+      {
+        "foldername": "folder1",
+        "description": "",
+        "created_at": "2023-04-27T13:54:08.067919-07:00",
         "files": []
       }
     ]

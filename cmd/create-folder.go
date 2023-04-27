@@ -31,7 +31,7 @@ var createFolderCmd = &cobra.Command{
 		description, _ := cmd.Flags().GetString("description")
 
 		if succeed := createFolder(username, foldername, description); succeed {
-			fmt.Println("Create folder:" + foldername + " successfully.")
+			fmt.Println("Create folder:" + foldername + " in " + username + " successfully.")
 		}
 	},
 }
@@ -69,11 +69,10 @@ func createFolder(username string, foldername string, description string) (succe
 		return false
 	}
 	
-	current_time := time.Now()
 	folder := Folder{
 		Foldername: foldername, 
 		Description: description, 
-		Created_at: current_time.Format("01-02-2006 15:04:05"), 
+		Created_at: time.Now(), 
 		Files: []File{},
 	}
 	*folders = append(*folders, folder)
