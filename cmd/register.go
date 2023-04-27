@@ -6,7 +6,6 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -14,33 +13,29 @@ import (
 var registerCmd = &cobra.Command{
 	Use:   "register [username]",
 	Short: "resgister a new user",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		username, _ := cmd.Flags().GetString("username")
+		if err := checkValidation(username, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		registerUser(username)
 		fmt.Println("register called")
 	},
 }
 
 func init() {
-
-	var username string
 	
-	registerCmd.Flags().StringVarP(&username, "username", "u", "", "username")
+	registerCmd.Flags().StringP("username", "u", "", "username")
 	registerCmd.MarkFlagRequired("username")
 
 	rootCmd.AddCommand(registerCmd)
+}
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// registerCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// registerCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func registerUser(username string) {
+	fmt.Println(username)
+	users := getUsersInformation()
+	fmt.Println(users)
 }

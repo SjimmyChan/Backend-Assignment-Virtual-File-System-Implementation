@@ -6,21 +6,37 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
 // createFileCmd represents the createFile command
 var createFileCmd = &cobra.Command{
 	Use:   "create-file [username] [foldername] [filename] [description]?",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "",
+	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		username, _ := cmd.Flags().GetString("username")
+		if err := checkValidation(username, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		foldername, _ := cmd.Flags().GetString("foldername")
+		if err := checkValidation(foldername, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		filename, _ := cmd.Flags().GetString("filename")
+		if err := checkValidation(filename, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		description, _ := cmd.Flags().GetString("description")
+
+		createFile(username, foldername, filename, description)
+
 		fmt.Println("createFile called")
 	},
 }
@@ -28,17 +44,23 @@ to quickly create a Cobra application.`,
 
 func init() {
 
-	var username string
-	var foldername string
-	var filename string
-	var description string
+	// create flags
+	createFileCmd.Flags().StringP("username", "u", "", "username")
+	if err := createFileCmd.MarkFlagRequired("username"); err != nil {
+		fmt.Println(err)
+	}
 
-	createFileCmd.Flags().StringVarP(&username, "username", "u", "", "username")
-	createFileCmd.Flags().StringVarP(&foldername, "foldername", "f", "", "foldername")
-	createFileCmd.Flags().StringVarP(&filename, "filename", "i", "", "filename")
-	createFileCmd.Flags().StringVarP(&description, "description", "d", "", "description")
+	createFileCmd.Flags().StringP("foldername", "f", "", "foldername")
+	if err := createFileCmd.MarkFlagRequired("foldername"); err != nil {
+		fmt.Println(err)
+	}
 
-	createFileCmd.MarkFlagsRequiredTogether("username", "foldername", "filename")
+	createFileCmd.Flags().StringP("filename", "i", "", "filename")
+	if err := createFileCmd.MarkFlagRequired("filename"); err != nil {
+		fmt.Println(err)
+	}
+
+	createFileCmd.Flags().StringP("description", "d", "", "description")
 
 	rootCmd.AddCommand(createFileCmd)
 
@@ -51,4 +73,8 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// createFileCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func createFile(username string, foldername string, filename string, description string) {
+	fmt.Println(username, foldername, filename, description)
 }

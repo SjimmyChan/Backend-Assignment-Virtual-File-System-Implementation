@@ -13,37 +13,54 @@ import (
 // renameFolderCmd represents the renameFolder command
 var renameFolderCmd = &cobra.Command{
 	Use:   "rename-folder [username] [foldername] [new-folder-name]",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "",
+	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
+
+		username, _ := cmd.Flags().GetString("username")
+		if err := checkValidation(username, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		foldername, _ := cmd.Flags().GetString("foldername")
+		if err := checkValidation(foldername, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		new_foldername, _ := cmd.Flags().GetString("new-folder-name")
+		if err := checkValidation(new_foldername, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		renameFolder(username, foldername, new_foldername)
+
 		fmt.Println("renameFolder called")
 	},
 }
 
 func init() {
 
-	var username string
-	var foldername string
+	renameFolderCmd.Flags().StringP("username", "u", "", "username")
+	if err := renameFolderCmd.MarkFlagRequired("username"); err != nil {
+		fmt.Println(err)
+	}
 
-	renameFolderCmd.Flags().StringVarP(&username, "username", "u", "", "username")
-	renameFolderCmd.Flags().StringVarP(&foldername, "foldername", "f", "", "foldername")
+	renameFolderCmd.Flags().StringP("foldername", "f", "", "foldername")
+	if err := renameFolderCmd.MarkFlagRequired("foldername"); err != nil {
+		fmt.Println(err)
+	}
 
-	renameFolderCmd.MarkFlagsRequiredTogether("username", "foldername")
+	renameFolderCmd.Flags().StringP("new-folder-name", "n", "", "new-folder-name")
+	if err := renameFolderCmd.MarkFlagRequired("new-folder-name"); err != nil {
+		fmt.Println(err)
+	}
 
 	rootCmd.AddCommand(renameFolderCmd)
+}
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// renameFolderCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// renameFolderCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func renameFolder(username string, foldername string, new_foldername string) {
+	fmt.Println(username, foldername, new_foldername)
 }

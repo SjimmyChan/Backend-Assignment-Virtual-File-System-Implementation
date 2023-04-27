@@ -12,40 +12,47 @@ import (
 
 // createFolderCmd represents the createFolder command
 var createFolderCmd = &cobra.Command{
-	Use:   "create-file [username] [foldername] [description]?",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "create-folder [username] [foldername] [description]?",
+	Short: "",
+	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		username, _ := cmd.Flags().GetString("username")
+		if err := checkValidation(username, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		foldername, _ := cmd.Flags().GetString("foldername")
+		if err := checkValidation(foldername, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		description, _ := cmd.Flags().GetString("description")
+
+		createFolder(username, foldername, description)
+
 		fmt.Println("createFolder called")
 	},
 }
 
 func init() {
 
-	var username string
-	var foldername string
-	var description string
+	createFolderCmd.Flags().StringP("username", "u", "", "username")
+	if err := createFolderCmd.MarkFlagRequired("username"); err != nil {
+		fmt.Println(err)
+	}
 
-	createFolderCmd.Flags().StringVarP(&username, "username", "u", "", "username")
-	createFolderCmd.Flags().StringVarP(&foldername, "foldername", "f", "", "foldername")
-	createFolderCmd.Flags().StringVarP(&description, "description", "d", "", "description")
+	createFolderCmd.Flags().StringP("foldername", "f", "", "foldername")
+	if err := createFolderCmd.MarkFlagRequired("foldername"); err != nil {
+		fmt.Println(err)
+	}
 
-	createFolderCmd.MarkFlagsRequiredTogether("username", "foldername")
+	createFolderCmd.Flags().StringP("description", "d", "", "description")
 
 	rootCmd.AddCommand(createFolderCmd)
+}
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createFolderCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// createFolderCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func createFolder(username string, foldername string, description string) {
+	fmt.Println(username, foldername, description)
 }

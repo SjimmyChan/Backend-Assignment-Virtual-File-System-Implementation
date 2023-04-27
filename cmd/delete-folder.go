@@ -13,37 +13,42 @@ import (
 // deleteFolderCmd represents the deleteFolder command
 var deleteFolderCmd = &cobra.Command{
 	Use:   "delete-folder [username] [foldername]",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "",
+	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		username, _ := cmd.Flags().GetString("username")
+		if err := checkValidation(username, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		foldername, _ := cmd.Flags().GetString("foldername")
+		if err := checkValidation(foldername, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		deleteFolder(username, foldername)
+
 		fmt.Println("deleteFolder called")
 	},
 }
 
 func init() {
 
-	var username string
-	var foldername string
+	deleteFolderCmd.Flags().StringP("username", "u", "", "username")
+	if err := deleteFolderCmd.MarkFlagRequired("username"); err != nil {
+		fmt.Println(err)
+	}
 
-	deleteFolderCmd.Flags().StringVarP(&username, "username", "u", "", "username")
-	deleteFolderCmd.Flags().StringVarP(&foldername, "foldername", "f", "", "foldername")
-	
-	deleteFolderCmd.MarkFlagsRequiredTogether("username", "foldername")
+	deleteFolderCmd.Flags().StringP("foldername", "f", "", "foldername")
+	if err := deleteFolderCmd.MarkFlagRequired("foldername"); err != nil {
+		fmt.Println(err)
+	}
 
 	rootCmd.AddCommand(deleteFolderCmd)
+}
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// deleteFolderCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// deleteFolderCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func deleteFolder(username string, foldername string) {
+	fmt.Println(username, foldername)
 }

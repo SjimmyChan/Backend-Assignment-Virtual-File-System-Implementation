@@ -13,39 +13,53 @@ import (
 // deleteFileCmd represents the deleteFile command
 var deleteFileCmd = &cobra.Command{
 	Use:   "delete-file [username] [foldername] [filename]",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "",
+	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		username, _ := cmd.Flags().GetString("username")
+		if err := checkValidation(username, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		foldername, _ := cmd.Flags().GetString("foldername")
+		if err := checkValidation(foldername, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		filename, _ := cmd.Flags().GetString("filename")
+		if err := checkValidation(filename, 30); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		deleteFile(username, foldername, filename)
+
 		fmt.Println("deleteFile called")
 	},
 }
 
 func init() {
 
-	var username string
-	var foldername string
-	var filename string
+	deleteFileCmd.Flags().StringP("username", "u", "", "username")
+	if err := deleteFileCmd.MarkFlagRequired("username"); err != nil {
+		fmt.Println(err)
+	}
 
-	deleteFileCmd.Flags().StringVarP(&username, "username", "u", "", "username")
-	deleteFileCmd.Flags().StringVarP(&foldername, "foldername", "f", "", "foldername")
-	deleteFileCmd.Flags().StringVarP(&filename, "filename", "i", "", "filename")
-	
-	deleteFileCmd.MarkFlagsRequiredTogether("username", "foldername", "filename")
+	deleteFileCmd.Flags().StringP("foldername", "f", "", "foldername")
+	if err := deleteFileCmd.MarkFlagRequired("foldername"); err != nil {
+		fmt.Println(err)
+	}
+
+	deleteFileCmd.Flags().StringP("filename", "i", "", "filename")
+	if err := deleteFileCmd.MarkFlagRequired("filename"); err != nil {
+		fmt.Println(err)
+	}
 
 	rootCmd.AddCommand(deleteFileCmd)
+}
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// deleteFileCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// deleteFileCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func deleteFile(username string, foldername string, filename string) {
+	fmt.Println(username, foldername, filename)
 }
