@@ -6,7 +6,6 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -34,9 +33,9 @@ var deleteFileCmd = &cobra.Command{
 			return
 		}
 
-		deleteFile(username, foldername, filename)
-
-		fmt.Println("deleteFile called")
+		if succeed := deleteFile(username, foldername, filename); succeed {
+			fmt.Println("Delete file:" + filename + " successfully.")
+		}
 	},
 }
 
@@ -60,6 +59,36 @@ func init() {
 	rootCmd.AddCommand(deleteFileCmd)
 }
 
-func deleteFile(username string, foldername string, filename string) {
-	fmt.Println(username, foldername, filename)
+func deleteFile(username string, foldername string, filename string)(succeed bool) {
+	
+	users := getUsersInformation()
+	user_exist, user_index := checkUserExist(users, username)
+	if !user_exist {
+		fmt.Println("Error: The username:" + username + " doesn't exist.")
+		return false
+	}
+
+	folders := &users[user_index].Folders
+	folder_exist, folder_index := checkFolderExist(folders, foldername)
+	if !folder_exist {
+		fmt.Println("Error: The foldername:" + foldername + " doesn't existed.")
+		return false
+	}
+
+	files := &(*folders)[folder_index].Files
+	file_exist, file_index := checkFileExist(files, filename)
+	if !file_exist {
+		fmt.Println("Error: The filename:" + filename + " doesn't existed.")
+		return false
+	}
+
+	copy((*files)[file_index:], (*files)[file_index+1:])
+	(*files)[len(*files)-1] = File{}
+	*files = (*files)[: len(*files)-1]
+
+	if err := saveUsersInformation(users); err != nil {
+		fmt.Println(err)
+		return false
+	}
+	return true
 }

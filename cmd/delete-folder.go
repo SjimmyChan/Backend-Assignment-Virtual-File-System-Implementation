@@ -28,9 +28,10 @@ var deleteFolderCmd = &cobra.Command{
 			return
 		}
 
-		deleteFolder(username, foldername)
+		if succeed := deleteFolder(username, foldername); succeed {
+			fmt.Println("Delete folder:" + foldername + " successfully.")	
+		}
 
-		fmt.Println("deleteFolder called")
 	},
 }
 
@@ -49,6 +50,29 @@ func init() {
 	rootCmd.AddCommand(deleteFolderCmd)
 }
 
-func deleteFolder(username string, foldername string) {
-	fmt.Println(username, foldername)
+func deleteFolder(username string, foldername string)(succeed bool) {
+	
+	users := getUsersInformation()
+	user_exist, user_index := checkUserExist(users, username)
+	if !user_exist {
+		fmt.Println("Error: The username:" + username + " doesn't exist.")
+		return false
+	}
+
+	folders := &users[user_index].Folders
+	folder_exist, folder_index := checkFolderExist(folders, foldername)
+	if !folder_exist {
+		fmt.Println("Error: The foldername:" + foldername + " doesn't existed.")
+		return false
+	}
+
+	copy((*folders)[folder_index:], (*folders)[folder_index+1:])
+	(*folders)[len(*folders)-1] = Folder{}
+	*folders = (*folders)[: len(*folders)-1]
+
+	if err := saveUsersInformation(users); err != nil {
+		fmt.Println(err)
+		return false
+	}
+	return true
 }
