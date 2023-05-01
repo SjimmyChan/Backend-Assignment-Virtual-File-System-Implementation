@@ -31,8 +31,8 @@ func ListFileCmdRunE(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	sorted_name, _ := cmd.Flags().GetString("sorted-name")
-	sorted_created, _ := cmd.Flags().GetString("sorted-created")
+	sorted_name, _ := cmd.Flags().GetString("sort-name")
+	sorted_created, _ := cmd.Flags().GetString("sort-created")
 
 	if sorted_name != "" && sorted_created != "" {
 		cmd.Println("Warning: Please only choose one of sorting factor.")
@@ -53,9 +53,9 @@ func ListFileCmdFlags(cmd *cobra.Command) {
 		cmd.Println(err.Error())
 	}
 
-	cmd.Flags().String("sorted-name", "", "sorted by username")
+	cmd.Flags().String("sort-name", "", "sorted by username")
 
-	cmd.Flags().String("sorted-created", "", "sorted by create time")
+	cmd.Flags().String("sort-created", "", "sorted by create time")
 }
 
 func init() {

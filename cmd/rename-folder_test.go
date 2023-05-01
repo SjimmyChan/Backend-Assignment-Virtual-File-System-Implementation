@@ -14,7 +14,7 @@ func TestRenameFolderCmd(t *testing.T) {
 	cmd.InitialUsersInformation()
 
 	testRenameFolderCmd := &cobra.Command{
-		Use: "list-files",
+		Use: "rename-folder",
 		Run: RenameFolderCmdRunE,
 	}
 	RenameFolderCmdFlags(testRenameFolderCmd)

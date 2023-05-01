@@ -34,7 +34,7 @@ func CreateFolderCmdRunE(cmd *cobra.Command, args []string) {
 	description, _ := cmd.Flags().GetString("description")
 
 	if succeed := CreateFolder(cmd, username, foldername, description); succeed {
-		cmd.Println("Create folder:" + foldername + " in " + username + " successfully.")
+		cmd.Println("Create " + foldername + " in " + username + " successfully.")
 	}
 }
 

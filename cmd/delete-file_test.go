@@ -27,7 +27,7 @@ func TestDeleteFileCmd(t *testing.T) {
 	}{
 		{
 			input: []string{"-u", "user1", "-f", "folder1", "-i", "file1"},
-			output: "Delete file:file1 successfully.\n",
+			output: "Delete file1 in user1/folder1 successfully.\n",
 		},
 		{
 			input: []string{"-u", "abc", "-f", "folder1", "-i", "file1"},
@@ -100,7 +100,7 @@ func DeleteFileCmdRunE(c *cobra.Command, args []string) {
 		}
 
 		if succeed := cmd.DeleteFile(c, username, foldername, filename); succeed {
-			c.Println("Delete file:" + filename + " successfully.")
+			c.Println("Delete " + filename + " in " + username + "/" + foldername + " successfully.")
 		}
 }
 

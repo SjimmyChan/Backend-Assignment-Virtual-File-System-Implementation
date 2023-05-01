@@ -26,11 +26,11 @@ func TestRegisterCmd(t *testing.T) {
 	}{
 		{
 			input: []string{"-u", "user1"},
-			output: "Add user:user1 successfully.",
+			output: "Add user1 successfully.\n",
 		},
 		{
 			input: []string{"-u", "user1"},
-			output: "Error: The username:user1 has already existed.",
+			output: "Error: The user1 has already existed.\n",
 		},
 		{
 			input: []string{"-u", "user?"},
@@ -76,7 +76,7 @@ func RegisterCmdRunE(c *cobra.Command, args []string) {
 	}
 
 	if succeed := cmd.RegisterUser(c, username); succeed {
-		c.Print("Add user:" + username + " successfully.")
+		c.Println("Add " + username + " successfully.")
 	}
 }
 

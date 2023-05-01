@@ -25,7 +25,7 @@ func RegisterCmdRunE(cmd *cobra.Command, args []string) {
 	}
 
 	if succeed := RegisterUser(cmd, username); succeed {
-		cmd.Print("Add user:" + username + "successfully.")
+		cmd.Println("Add " + username + "successfully.")
 	}
 }
 
@@ -46,7 +46,7 @@ func RegisterUser(cmd *cobra.Command, username string)(succeed bool) {
 	users := GetUsersInformation()
 	exist, _ := checkUserExist(users, username)
 	if exist {
-		cmd.Print("Error: The username:" + username + " has already existed.")
+		cmd.Println("Error: The " + username + " has already existed.")
 		return false
 	}
 

@@ -27,7 +27,7 @@ func TestCreateFolderCmd(t *testing.T) {
 	}{
 		{
 			input: []string{"-u", "user1", "-f", "folder1"},
-			output: "Create folder:folder1 in user1 successfully.\n",
+			output: "Create folder1 in user1 successfully.\n",
 		},
 		{
 			input: []string{"-u", "abc", "-f", "folder1"},
@@ -84,7 +84,7 @@ func CreateFolderCmdRunE(c *cobra.Command, args []string) {
 		description, _ := c.Flags().GetString("description")
 
 		if succeed := cmd.CreateFolder(c, username, foldername, description); succeed {
-			c.Println("Create folder:" + foldername + " in " + username + " successfully.")
+			c.Println("Create " + foldername + " in " + username + " successfully.")
 		}
 }
 

@@ -36,7 +36,7 @@ func DeleteFileCmdRunE(cmd *cobra.Command, args []string) {
 	}
 
 	if succeed := DeleteFile(cmd, username, foldername, filename); succeed {
-		cmd.Println("Delete file:" + filename + " successfully.")
+		cmd.Println("Delete " + filename + " in " + username + "/" + foldername + " successfully.")
 	}
 }
 

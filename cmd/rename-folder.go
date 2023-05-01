@@ -31,7 +31,7 @@ func RenameFolderCmdRunE(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	new_foldername, _ := cmd.Flags().GetString("new_foldername")
+	new_foldername, _ := cmd.Flags().GetString("new-folder-name")
 	if err := CheckValidation(3, new_foldername, 30); err != nil {
 		cmd.Print(err.Error())
 		return
@@ -53,8 +53,8 @@ func RenameFolderCmdFlags(cmd *cobra.Command) {
 		cmd.Print(err.Error())
 	}
 
-	cmd.Flags().StringP("new_foldername", "n", "", "new_foldername")
-	if err := cmd.MarkFlagRequired("new_foldername"); err != nil {
+	cmd.Flags().StringP("new-folder-name", "n", "", "new-folder-name")
+	if err := cmd.MarkFlagRequired("new-folder-name"); err != nil {
 		cmd.Print(err.Error())
 	}
 }

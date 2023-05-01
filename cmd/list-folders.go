@@ -24,8 +24,8 @@ func ListFoldersCmdRunE(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	sorted_name, _ := cmd.Flags().GetString("sorted-name")
-	sorted_created, _ := cmd.Flags().GetString("sorted-created")
+	sorted_name, _ := cmd.Flags().GetString("sort-name")
+	sorted_created, _ := cmd.Flags().GetString("sort-created")
 
 	if sorted_name != "" && sorted_created != "" {
 		cmd.Println("Warning: Please only choose one of sorting factor.")
@@ -41,9 +41,9 @@ func ListFoldersCmdFlags(cmd *cobra.Command) {
 		cmd.Println(err.Error())
 	}
 
-	cmd.Flags().StringP("sorted-name", "", "", "sorted by username")
+	cmd.Flags().StringP("sort-name", "", "", "sorted by username")
 
-	cmd.Flags().StringP("sorted-created", "", "", "sorted by create time")
+	cmd.Flags().StringP("sort-created", "", "", "sorted by create time")
 }
 
 func init() {

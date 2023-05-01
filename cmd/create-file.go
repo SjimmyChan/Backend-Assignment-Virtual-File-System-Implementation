@@ -39,7 +39,7 @@ func CreateFileCmdRunE(cmd *cobra.Command, args []string) {
 	description, _ := cmd.Flags().GetString("description")
 
 	if succeed := CreateFile(cmd, username, foldername, filename, description); succeed {
-		cmd.Println("Create file:" + filename + " in " + username + "/" + foldername + " successfully.")
+		cmd.Println("Create " + filename + " in " + username + "/" + foldername + " successfully.")
 	}
 }
 
