@@ -5,7 +5,6 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -14,71 +13,77 @@ var deleteFileCmd = &cobra.Command{
 	Use:   "delete-file [username] [foldername] [filename]",
 	Short: "",
 	Long: ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		username, _ := cmd.Flags().GetString("username")
-		if err := checkValidation(0, username, 30); err != nil {
-			fmt.Println(err)
-			return
-		}
+	Run: DeleteFileCmdRunE,
+}
 
-		foldername, _ := cmd.Flags().GetString("foldername")
-		if err := checkValidation(1, foldername, 30); err != nil {
-			fmt.Println(err)
-			return
-		}
+func DeleteFileCmdRunE(cmd *cobra.Command, args []string) {
+	username, _ := cmd.Flags().GetString("username")
+	if err := CheckValidation(0, username, 30); err != nil {
+		cmd.Print(err.Error())
+		return
+	}
 
-		filename, _ := cmd.Flags().GetString("filename")
-		if err := checkValidation(2, filename, 30); err != nil {
-			fmt.Println(err)
-			return
-		}
+	foldername, _ := cmd.Flags().GetString("foldername")
+	if err := CheckValidation(1, foldername, 30); err != nil {
+		cmd.Print(err.Error())
+		return
+	}
 
-		if succeed := deleteFile(username, foldername, filename); succeed {
-			fmt.Println("Delete file:" + filename + " successfully.")
-		}
-	},
+	filename, _ := cmd.Flags().GetString("filename")
+	if err := CheckValidation(2, filename, 30); err != nil {
+		cmd.Print(err.Error())
+		return
+	}
+
+	if succeed := DeleteFile(cmd, username, foldername, filename); succeed {
+		cmd.Println("Delete file:" + filename + " successfully.")
+	}
+}
+
+func DeleteFileCmdFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("username", "u", "", "username")
+	if err := cmd.MarkFlagRequired("username"); err != nil {
+		cmd.Print(err.Error())
+	}
+
+	cmd.Flags().StringP("foldername", "f", "", "foldername")
+	if err := cmd.MarkFlagRequired("foldername"); err != nil {
+		cmd.Print(err.Error())
+	}
+
+	cmd.Flags().StringP("filename", "i", "", "filename")
+	if err := cmd.MarkFlagRequired("filename"); err != nil {
+		cmd.Print(err.Error())
+	}
 }
 
 func init() {
 
-	deleteFileCmd.Flags().StringP("username", "u", "", "username")
-	if err := deleteFileCmd.MarkFlagRequired("username"); err != nil {
-		fmt.Println(err)
-	}
-
-	deleteFileCmd.Flags().StringP("foldername", "f", "", "foldername")
-	if err := deleteFileCmd.MarkFlagRequired("foldername"); err != nil {
-		fmt.Println(err)
-	}
-
-	deleteFileCmd.Flags().StringP("filename", "i", "", "filename")
-	if err := deleteFileCmd.MarkFlagRequired("filename"); err != nil {
-		fmt.Println(err)
-	}
+	DeleteFileCmdFlags(deleteFileCmd)
 
 	rootCmd.AddCommand(deleteFileCmd)
 }
 
-func deleteFile(username string, foldername string, filename string)(succeed bool) {
+func DeleteFile(cmd *cobra.Command, username string, foldername string, filename string)(succeed bool) {
 	
-	users := getUsersInformation()
+	users := GetUsersInformation()
 	user_exist, user_index := checkUserExist(users, username)
 	if !user_exist {
-		fmt.Println("Error: The username:" + username + " doesn't exist.")
+		cmd.Println("Error: The username:" + username + " doesn't exist.")
 		return false
 	}
 
 	folders := &users[user_index].Folders
 	folder_exist, folder_index := checkFolderExist(folders, foldername)
 	if !folder_exist {
-		fmt.Println("Error: The foldername:" + foldername + " doesn't exist.")
+		cmd.Println("Error: The foldername:" + foldername + " doesn't exist.")
 		return false
 	}
 
 	files := &(*folders)[folder_index].Files
 	file_exist, file_index := checkFileExist(files, filename)
 	if !file_exist {
-		fmt.Println("Error: The filename:" + filename + " doesn't exist.")
+		cmd.Println("Error: The filename:" + filename + " doesn't exist.")
 		return false
 	}
 
@@ -86,8 +91,8 @@ func deleteFile(username string, foldername string, filename string)(succeed boo
 	(*files)[len(*files)-1] = File{}
 	*files = (*files)[: len(*files)-1]
 
-	if err := saveUsersInformation(users); err != nil {
-		fmt.Println(err)
+	if err := SaveUsersInformation(users); err != nil {
+		cmd.Print(err.Error())
 		return false
 	}
 	return true

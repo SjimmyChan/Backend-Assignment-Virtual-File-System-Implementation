@@ -5,7 +5,6 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 
 	"github.com/spf13/cobra"
 )
@@ -15,54 +14,60 @@ var deleteFolderCmd = &cobra.Command{
 	Use:   "delete-folder [username] [foldername]",
 	Short: "",
 	Long: ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		username, _ := cmd.Flags().GetString("username")
-		if err := checkValidation(0, username, 30); err != nil {
-			fmt.Println(err)
-			return
-		}
+	Run: DeleteFolderCmdRunE,
+}
 
-		foldername, _ := cmd.Flags().GetString("foldername")
-		if err := checkValidation(1, foldername, 30); err != nil {
-			fmt.Println(err)
-			return
-		}
+func DeleteFolderCmdRunE(cmd *cobra.Command, args []string) {
+	username, _ := cmd.Flags().GetString("username")
+	if err := CheckValidation(0, username, 30); err != nil {
+		cmd.Print(err.Error())
+		return
+	}
 
-		if succeed := deleteFolder(username, foldername); succeed {
-			fmt.Println("Delete folder:" + foldername + " successfully.")	
-		}
+	foldername, _ := cmd.Flags().GetString("foldername")
+	if err := CheckValidation(1, foldername, 30); err != nil {
+		cmd.Print(err.Error())
+		return
+	}
 
-	},
+	if succeed := DeleteFolder(cmd, username, foldername); succeed {
+		cmd.Println("Delete folder:" + foldername + " successfully.")	
+	}
+
+}
+
+func DeleteFolderCmdFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("username", "u", "", "username")
+	if err := cmd.MarkFlagRequired("username"); err != nil {
+		cmd.Print(err.Error())
+	}
+
+	cmd.Flags().StringP("foldername", "f", "", "foldername")
+	if err := cmd.MarkFlagRequired("foldername"); err != nil {
+		cmd.Print(err.Error())
+	}
 }
 
 func init() {
 
-	deleteFolderCmd.Flags().StringP("username", "u", "", "username")
-	if err := deleteFolderCmd.MarkFlagRequired("username"); err != nil {
-		fmt.Println(err)
-	}
-
-	deleteFolderCmd.Flags().StringP("foldername", "f", "", "foldername")
-	if err := deleteFolderCmd.MarkFlagRequired("foldername"); err != nil {
-		fmt.Println(err)
-	}
+	DeleteFolderCmdFlags(deleteFolderCmd)
 
 	rootCmd.AddCommand(deleteFolderCmd)
 }
 
-func deleteFolder(username string, foldername string)(succeed bool) {
+func DeleteFolder(cmd *cobra.Command, username string, foldername string)(succeed bool) {
 	
-	users := getUsersInformation()
+	users := GetUsersInformation()
 	user_exist, user_index := checkUserExist(users, username)
 	if !user_exist {
-		fmt.Println("Error: The username:" + username + " doesn't exist.")
+		cmd.Println("Error: The username:" + username + " doesn't exist.")
 		return false
 	}
 
 	folders := &users[user_index].Folders
 	folder_exist, folder_index := checkFolderExist(folders, foldername)
 	if !folder_exist {
-		fmt.Println("Error: The foldername:" + foldername + " doesn't exist.")
+		cmd.Println("Error: The foldername:" + foldername + " doesn't exist.")
 		return false
 	}
 
@@ -70,8 +75,8 @@ func deleteFolder(username string, foldername string)(succeed bool) {
 	(*folders)[len(*folders)-1] = Folder{}
 	*folders = (*folders)[: len(*folders)-1]
 
-	if err := saveUsersInformation(users); err != nil {
-		fmt.Println(err)
+	if err := SaveUsersInformation(users); err != nil {
+		cmd.Print(err.Error())
 		return false
 	}
 	return true

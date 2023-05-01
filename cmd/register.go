@@ -5,7 +5,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -14,41 +14,47 @@ var registerCmd = &cobra.Command{
 	Use:   "register [username]",
 	Short: "resgister a new user",
 	Long: ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		username, _ := cmd.Flags().GetString("username")
-		if err := checkValidation(0, username, 30); err != nil {
-			fmt.Println(err)
-			return
-		}
+	Run: RegisterCmdRunE,
+}
 
-		if succeed := registerUser(username); succeed {
-			fmt.Println("Add user:" + username + "successfully.")
-		}
-	},
+func RegisterCmdRunE(cmd *cobra.Command, args []string) {
+	username, _ := cmd.Flags().GetString("username")
+	if err := CheckValidation(0, username, 30); err != nil {
+		cmd.Print(err.Error())
+		return
+	}
+
+	if succeed := RegisterUser(cmd, username); succeed {
+		cmd.Print("Add user:" + username + "successfully.")
+	}
+}
+
+func RegisterCmdFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("username", "u", "", "username")
+	cmd.MarkFlagRequired("username")
 }
 
 func init() {
-	
-	registerCmd.Flags().StringP("username", "u", "", "username")
-	registerCmd.MarkFlagRequired("username")
+
+	RegisterCmdFlags(registerCmd)
 
 	rootCmd.AddCommand(registerCmd)
 }
 
-func registerUser(username string)(succeed bool) {
+func RegisterUser(cmd *cobra.Command, username string)(succeed bool) {
 	
-	users := getUsersInformation()
+	users := GetUsersInformation()
 	exist, _ := checkUserExist(users, username)
 	if exist {
-		fmt.Println("Error: The username:" + username + " has already existed.")
+		cmd.Print("Error: The username:" + username + " has already existed.")
 		return false
 	}
 
 	user := User{Username: username, Folders: []Folder{}, }
 	users = append(users, user)
 	
-	if err := saveUsersInformation(users); err != nil {
-		fmt.Println(err)
+	if err := SaveUsersInformation(users); err != nil {
+		cmd.Println(err.Error())
 		return false
 	}
 	return true

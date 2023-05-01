@@ -30,7 +30,7 @@ type User struct {
 }
 
 func getFilePath() (path string) {
-	absPath, err := filepath.Abs("../IsCoollab-Backend-Assignment-Virtual-File-System-Implementation/cmd/data/users_information.json")
+	absPath, err := filepath.Abs("../cmd/data/users_information.json")
 	if err != nil {
 		panic(err)
 		return
@@ -38,7 +38,7 @@ func getFilePath() (path string) {
 	return absPath
 }
 
-func getUsersInformation()(users []User) {
+func GetUsersInformation()(users []User) {
 	fileBytes, err := ioutil.ReadFile(getFilePath())
 
 	if err != nil {
@@ -54,7 +54,7 @@ func getUsersInformation()(users []User) {
 	return users
 }
 
-func saveUsersInformation(users []User)(err error) {
+func SaveUsersInformation(users []User)(err error) {
 
 	userBytes, err := json.MarshalIndent(users, "", "  ")
 	if err != nil {
@@ -68,7 +68,20 @@ func saveUsersInformation(users []User)(err error) {
 	return nil
 }
 
-func checkValidation(options int, input string, length int) (err error) {
+func InitialUsersInformation()(err error) {
+	userBytes, err := json.MarshalIndent([]User{}, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(getFilePath(), userBytes, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CheckValidation(options int, input string, length int) (err error) {
 	
 	var option string
 	switch options {
@@ -78,19 +91,88 @@ func checkValidation(options int, input string, length int) (err error) {
 			option = "foldername"
 		case 2:
 			option = "filename"
+		case 3:
+			option = "new_foldername"
 	}
 
 	if len(input) > length || len(input) == 0 {
-		return errors.New("Error: The " + option + " must be less than " + strconv.Itoa(length) + " chars and greater than 1 char.")
+		return errors.New("Error: The " + option + " must be less than " + strconv.Itoa(length) + " chars and greater than 1 char.\n")
 	}
 
 	var alphanumeric = regexp.MustCompile("^[a-zA-Z0-9_]*$")
 
 	if !alphanumeric.MatchString(input) {
-		return errors.New("Error: " + option + " contains invalid chars.")
+		return errors.New("Error: " + option + " contains invalid chars.\n")
 	}
 
 	return nil
+}
+
+func CreateFakeData(username string, foldername string, filename string, folder_description string, file_description string) (users []User) {
+	var files []File
+	if filename != "" {
+		file := File{
+			Filename: filename,
+			Description: file_description,
+			Created_at: time.Now(),
+		}
+		files = append(files, file)
+	}
+	var folders []Folder
+	if foldername != "" {
+		folder := Folder{
+			Foldername: foldername,
+			Description: folder_description,
+			Created_at: time.Now(),
+			Files: files,
+		}
+		folders = append(folders, folder)
+	}
+	user := User{
+		Username: username,
+		Folders: folders,
+	}
+	return append(users, user)
+}
+
+func CreateFakeListData(username string, foldernames []string, filenames []string, option int, t time.Time) (users []User) {
+	var files []File
+	var folders []Folder
+
+	switch option {
+		case 0:
+			for index, foldername := range foldernames {
+				folder := Folder{
+					Foldername: foldername,
+					Description: "",
+					Created_at: t.Add(time.Hour * time.Duration(index)),
+					Files: files,
+				}
+				folders = append(folders, folder)
+			}
+		case 1:
+			for index, filename := range filenames {
+				file := File{
+					Filename: filename,
+					Description: "",
+					Created_at: t.Add(time.Hour * time.Duration(index)),
+				}
+				files = append(files, file)
+			}
+			folder := Folder{
+				Foldername: foldernames[0],
+				Description: "",
+				Created_at: t,
+				Files: files,
+			}
+			folders = append(folders, folder)
+	}
+
+	user := User{
+		Username: username,
+		Folders: folders,
+	}
+	return append(users, user)
 }
 
 func checkUserExist(users []User, username string)(exist bool, index int) {
